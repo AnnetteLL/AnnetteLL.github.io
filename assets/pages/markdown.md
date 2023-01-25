@@ -43,8 +43,11 @@ $$
 ---
 哈哈哈
 
+##### 引用
 [百度](baidu.com"一个搜索引擎")
 [百度](id)，[百度](id)，[百度](id)
 [^id]: baidu.com"一个搜索引擎"
 
 请参考[Markdown用法](#Markdown用法)
+URL: 
+http://www.baidu.com
