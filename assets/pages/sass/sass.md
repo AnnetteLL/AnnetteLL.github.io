@@ -3,6 +3,26 @@
 ## 网址
 URL： [www.sass.hk](https://www.sass.hk/)
 配置： [github.com/ritwickdey/vscode-live-compiler](https://github.com/ritwickdey/vscode-live-sass-compiler)
+```json
+  "liveSassCompile.settings.autoprefix": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "liveSassCompile.settings.formats":[
+    {
+        "format": "expanded", // nested - 嵌套格式   expanded - 展开格式    compact - 紧凑格式    compressed - 压缩格式
+        "extensionName": ".css",
+        "savePath": null // null表示当前目录
+    }
+  ],
+  // 排除目录
+  "liveSassCompile.settings.excludeList": [ 
+    // "**/node_modules/**",
+    // ".vscode/**" 
+  ],
+  // 是否添加兼容前缀，如： --webkit- -moz- 等
+  "liveSassCompile.settings.generateMap": true
+```
 
 ## 语法
 ### 选择器嵌套
