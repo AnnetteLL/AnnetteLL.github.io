@@ -1,0 +1,24 @@
+.button.btn-danger, .button.btn-success, .button.btn-default {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+}
+
+.btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #b5c077;
+  border-color: #b5c077;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #dd7933;
+  border-color: #dd7933;
+}/*# sourceMappingURL=sass.css.map */
