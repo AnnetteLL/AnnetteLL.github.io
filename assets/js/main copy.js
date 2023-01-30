@@ -2,6 +2,8 @@ var app = new Vue({
 	el: '#wrapper',
 	data: {
 		_body: null,
+		sidebar_locked: 0,
+		_menu_openers: null,
 	},
 	mounted: function() {
 		var that = this;
@@ -16,11 +18,11 @@ var app = new Vue({
 		// var resizeTimeout;
 		// $window.on('resize', function() {
 		// 	// Mark as resizing.
-		//  this._body.className = this._body.className.concat('is-resizing');
+		//  this._body.className = that._body.className.indexOf(' is-resizing')==-1? this._body.className.concat(' is-resizing'): this._body.className;
 		// 	// Unmark after delay.
 		// 	clearTimeout(resizeTimeout);
 		// 	resizeTimeout = setTimeout(function() {
-		//    that._body.className = that._body.className.replace('is-resizing', '');
+		//    that._body.className = that._body.className.replace(' is-resizing', '');
 		// 	}, 100);
 		// });
 		breakpoints({
@@ -51,30 +53,25 @@ var app = new Vue({
 			// 	});
 
 		var resizeTimeout;
-		// $window.on('resize', function() {
-			// Mark as resizing.
-			this._body.className = this._body.className.concat('is-resizing');
-			// Unmark after delay.
-			clearTimeout(resizeTimeout);
-			resizeTimeout = setTimeout(function() {
-				that._body.className = that._body.className.replace('is-resizing', '');
-			}, 100);
+		// Mark as resizing.
+		this._body.className = that._body.className.indexOf(' is-resizing')==-1? this._body.className.concat(' is-resizing'): this._body.className;
+		// Unmark after delay.
+		clearTimeout(resizeTimeout);
+		resizeTimeout = setTimeout(function() {
+			that._body.className = that._body.className.replace(' is-resizing', '');
+		}, 100);
 
-			// Sidebar.
-			console.log(this.$refs);
-			// this.$refs.sidebar
-			var $sidebar = $('#sidebar'),
-			$sidebar_inner = $sidebar.children('.inner');
-			// Inactive by default on <= large.
-			breakpoints.on('<=large', function() {
-				console.log(111);
-				// $sidebar.addClass('inactive');
-				that.$refs.sidebar.className = that.$refs.sidebar.className.concat(' inactive');
-				console.log(that.$refs.sidebar.className);
-			});
-			breakpoints.on('>large', function() {
-				$sidebar.removeClass('inactive');
-			});
+		// Sidebar.
+		console.log(this.$refs);
+		// this.$refs.sidebar
+		var $sidebar = $('#sidebar');
+		// Inactive by default on <= large.
+		breakpoints.on('<=large', function() {
+			that.$refs.sidebar.className = that.$refs.sidebar.className.indexOf(' inactive')==-1? that.$refs.sidebar.className.concat(' inactive'): that.$refs.sidebar.className;
+		});
+		breakpoints.on('>large', function() {
+			that.$refs.sidebar.className = that.$refs.sidebar.className.replace(' inactive', '');
+		});
 
 			// Hack: Workaround for Chrome/Android scrollbar position bug.
 			// if (browser.os == 'android'
@@ -90,10 +87,10 @@ var app = new Vue({
 				event.preventDefault();
 				event.stopPropagation();
 				// Toggle.
-				$sidebar.toggleClass('inactive');
+				that.$refs.sidebar.className = that.$refs.sidebar.className.indexOf(' inactive')==-1? that.$refs.sidebar.className.concat(' inactive'): that.$refs.sidebar.className.replace(' inactive', '');
 			});
 
-	// Events.
+		// Events.
 		// Link clicks.
 			$sidebar.on('click', 'a', function(event) {
 				// >large? Bail.
@@ -110,7 +107,7 @@ var app = new Vue({
 				if (!href || href == '#' || href == '')
 					return;
 				// Hide sidebar.
-				$sidebar.addClass('inactive');
+				that.$refs.sidebar.className = that.$refs.sidebar.className.indexOf(' inactive')==-1? that.$refs.sidebar.className.concat(' inactive'): that.$refs.sidebar.className;
 				// Redirect to href.
 				setTimeout(function() {
 					if (target == '_blank')
@@ -136,11 +133,11 @@ var app = new Vue({
 			if (breakpoints.active('>large'))
 				return;
 			// Deactivate.
-			$sidebar.addClass('inactive');
+			that.$refs.sidebar.className = that.$refs.sidebar.className.indexOf(' inactive')==-1? that.$refs.sidebar.className.concat(' inactive'): that.$refs.sidebar.className;
 		});
 
-	// Scroll lock.
-	// Note: If you do anything to change the height of the sidebar's content, be sure to trigger 'resize.sidebar-lock' on $window so stuff doesn't get out of sync.
+		// Scroll lock.
+		// Note: If you do anything to change the height of the sidebar's content, be sure to trigger 'resize.sidebar-lock' on $window so stuff doesn't get out of sync.
 
 		$window.on('load.sidebar-lock', function() {
 			var sh, wh, st;
@@ -151,7 +148,10 @@ var app = new Vue({
 				var x, y;
 				// <=large? Bail.
 				if (breakpoints.active('<=large')) {
-					$sidebar_inner.data('locked', 0).css('position', '').css('top', '');
+					that.sidebar_locked = 0;
+					that.$refs.sidebar_inner.dataset.locked = 0;
+					that.$refs.sidebar_inner.style.position = '';
+					that.$refs.sidebar_inner.style.top = '';
 					return;
 				}
 
@@ -159,50 +159,47 @@ var app = new Vue({
 				x = Math.max(sh - wh, 0);
 				y = Math.max(0, $window.scrollTop() - x);
 				// Lock/unlock.
-				if ($sidebar_inner.data('locked') == 1) {
-					if (y <= 0)
-						$sidebar_inner
-							.data('locked', 0)
-							.css('position', '')
-							.css('top', '');
-					else
-						$sidebar_inner
-							.css('top', -1 * x);
+				if (that.sidebar_locked == 1) {
+					if (y <= 0) {
+						that.sidebar_locked = 0;
+						that.$refs.sidebar_inner.style.position = '';
+						that.$refs.sidebar_inner.style.top = '';
+					} else {
+						that.$refs.sidebar_inner.style.top = -1 * x + 'px';
+					}
 				}
 				else {
-					if (y > 0)
-						$sidebar_inner
-							.data('locked', 1)
-							.css('position', 'fixed')
-							.css('top', -1 * x);
+					if (y > 0) {
+						that.sidebar_locked = 1;
+						that.$refs.sidebar_inner.style.position = 'fixed';
+						that.$refs.sidebar_inner.style.top = -1 * x + 'px';
+					}
 				}
 			}).on('resize.sidebar-lock', function() {
 				// Calculate heights.
-				wh = $window.height();
-				sh = $sidebar_inner.outerHeight() + 30;
+				wh = window.innerHeight;
+				sh = that.$refs.sidebar_inner.offsetHeight + 30;
 				// Trigger scroll.
 				$window.trigger('scroll.sidebar-lock');
 			}).trigger('resize.sidebar-lock');
 		});
 
 		// Menu.
-		var $menu = $('#menu'),
-			$menu_openers = $menu.children('ul').find('.opener');
+		this._menu_openers = document.querySelectorAll('.opener');
 		// Openers.
-		$menu_openers.each(function() {
-			var $this = $(this);
-			$this.on('click', function(event) {
+		for(var i = 0; i<this._menu_openers.length; i++) {
+			this._menu_openers[i].addEventListener('click', function(event) {
 				// Prevent default.
 				event.preventDefault();
 				// Toggle.
-				$menu_openers.not($this).removeClass('active');
-				$this.toggleClass('active');
+				for(var j = 0; j<that._menu_openers.length; j++) {
+					that._menu_openers[j].className = that._menu_openers[j]!=event.target? that._menu_openers[j].className.replace(' active', ''):that._menu_openers[j].className;
+				}
+				event.target.className = event.target.className.indexOf(' active')==-1? event.target.className.concat(' active'):  event.target.className.replace(' active', '');
 				// Trigger resize (sidebar lock).
-				$window.triggerHandler('resize.sidebar-lock');
+				// $window.triggerHandler('resize.sidebar-lock');
 			});
-		});
-
-		// });
+		}
 	},
 	methods: {}
 });
