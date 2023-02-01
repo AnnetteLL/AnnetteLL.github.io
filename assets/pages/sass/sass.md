@@ -196,3 +196,37 @@ css:
 ## 注释
 // 这里不会编译到css中
 /* 这里会编译到css中 */
+
+
+## 定义
+1. 变量以$开头
+2. \$border-color与\$border_color相同，后定义的覆盖前定义
+3. 变量一定要先定义，后使用
+4. !global可以定义全局变量
+
+sass:
+```sass
+$color: #f00;
+$border-color: #f2f2f2;
+$border_color: #f00;
+.container {
+  color: $color;
+  border-color: $border-color;
+  $font-size: 16px !global;
+  font-size: $font-size;
+}
+.footer {
+  font-size: $font-size;
+}
+```
+css:
+```css
+.container {
+  color: #f00;
+  border-color: #f00;
+  font-size: 16px;
+}
+.footer {
+  font-size: 16px;
+}/*# sourceMappingURL=sass.css.map */
+```

@@ -1,24 +1,12 @@
-.button%base {
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: normal;
-  text-align: center;
+/*
+  1. 局部变量
+  2. 全局变量
+*/
+
+.container {
+  $font-size: 16px !global;
+  font-size: $font-size;
 }
-.btn-default {
-  @extend %base;
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
-}
-.btn-success {
-  @extend %base;
-  color: #fff;
-  background-color: #b5c077;
-  border-color: #b5c077;
-}
-.btn-danger {
-  @extend %base;
-  color: #fff;
-  background-color: #dd7933;
-  border-color: #dd7933;
+.footer {
+  font-size: $font-size;
 }
